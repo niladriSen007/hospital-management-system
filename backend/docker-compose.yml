@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  user-db:
+    image: mysql:8.0
+    container_name: hms-user-db
+    environment:
+      MYSQL_ROOT_PASSWORD: user
+      MYSQL_DATABASE: hms_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - "3307:3306"
+    volumes:
+      - user-db-data:/var/lib/mysql
+    networks:
+      - hms-network
+volumes:
+  user-db-data:
+networks:
+  hms-network:
+    driver: bridge
