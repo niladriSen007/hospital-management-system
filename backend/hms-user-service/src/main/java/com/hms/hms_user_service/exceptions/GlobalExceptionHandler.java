@@ -3,6 +3,7 @@ package com.hms.hms_user_service.exceptions;
 import com.hms.hms_user_service.errors.ApiError;
 import com.hms.hms_user_service.errors.UserAlreadyExistsException;
 import com.hms.hms_user_service.errors.UserNotFoundException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.MethodInvocationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError<?>> handleAuthenticationException(AuthenticationException ex) {
         ApiError<Object> apiError = new ApiError<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED, null);
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiError<?>> handleJwtException(JwtException ex) {
+        ApiError<Object> apiError = new ApiError<>("INVALID_TOKEN", HttpStatus.UNAUTHORIZED, null);
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 

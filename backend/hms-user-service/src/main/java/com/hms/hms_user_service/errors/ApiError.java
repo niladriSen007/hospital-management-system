@@ -12,7 +12,7 @@ public class ApiError<T> {
     private T data;
 
     public ApiError() {
-        this.timestamp = LocalDateTime.now();
+        this.timeStamp = LocalDateTime.now();
     }
     public ApiError(String message, HttpStatus statusCode) {}
 
