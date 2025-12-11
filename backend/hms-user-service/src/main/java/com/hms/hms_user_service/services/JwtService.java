@@ -19,20 +19,31 @@ public class JwtService {
     @Value("${jwt.secret:sdsdcscscscdvgsjgsjcfjsfcjrffwefffefsfsfsfdsfsdfsfdsdfsdfshfcd}")
     private String jwtSecret;
 
-    public String generateToken(String email) {
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.forEach(builder::claim);
-//        return createToken(builder,email);
-        return createToken(builder, email);
+//    public String generateToken(String email) {
+
+    /// /        Map<String, Object> claims = new HashMap<>();
+    /// /        claims.forEach(builder::claim);
+    /// /        return createToken(builder,email);
+//        return createToken(builder, email);
+//    }
+    public String generateAccessToken(String email) {
+        return createToken(builder, email, 1000L * 60 * 15); // 15 minutes
     }
 
-    private String createToken(JwtBuilder builder, String email) {
+    public String generateRefreshToken(String email) {
+        return Jwts.builder().subject(email).issuedAt(new Date()).expiration(
+                        new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30 * 6) // 6 months
+                ).signWith(getSigningKey())
+                .compact();
+    }
+
+    private String createToken(JwtBuilder builder, String email, Long timeInMillis) {
         return builder
                 .subject(email)
                 .claim("email", email)
                 .claim("roles", Set.of("PATIENT", "DOCTOR", "ADMIN"))
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 ))
+                .expiration(new Date(System.currentTimeMillis() + timeInMillis))
                 .signWith(getSigningKey())
                 .compact();
     }

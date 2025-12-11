@@ -53,22 +53,53 @@ public class UserService {
 
     public LoginResponse loginUser(LoginRequest loginRequest) {
         Authentication authentication = authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
-        String token = "";
+        String accessToken = "";
+        String refreshToken = "";
         if (authentication.isAuthenticated()) {
             log.info("Logging in user");
-            System.out.println((Object)authentication.getPrincipal());
+            System.out.println((Object) authentication.getPrincipal());
             UserDetails userDetails = appUserDetailsService.loadUserByUsername(authentication.getName());
-            token = getToken(userDetails.getUsername());
+            accessToken = getAccessToken(userDetails.getUsername());
+            refreshToken = getRefreshToken(userDetails.getUsername());
         } else {
             log.info("User not authenticated while Login");
             throw new UsernameNotFoundException("User not authenticated");
         }
-        return LoginResponse.builder().email(loginRequest.getEmail()).token(token).build();
+        return LoginResponse
+                .builder()
+                .email(loginRequest.getEmail())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
-    public String getToken(String email) {
-        log.info("Generating token");
-        return jwtService.generateToken(email);
+    public LoginResponse refreshToken(String refreshToken) {
+        log.info("Refreshing token");
+        String userEmail = jwtService.getUserEmailFromToken(refreshToken);
+        UserDetails userDetails = appUserDetailsService.loadUserByUsername(userEmail);
+        if (jwtService.validateToken(refreshToken, userDetails)) {
+            String newAccessToken = getAccessToken(userEmail);
+            String newRefreshToken = getRefreshToken(userEmail);
+            log.info("Refresh token validated and new tokens generated for user: {}", userEmail);
+            return LoginResponse.builder()
+                    .email(userEmail)
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+        } else {
+            log.error("Invalid refresh token for user: {}", userEmail);
+            throw new UsernameNotFoundException("Invalid refresh token");
+        }
+    }
+
+    public String getAccessToken(String email) {
+        log.info("Generating access token");
+        return jwtService.generateAccessToken(email);
+    }
+
+    public String getRefreshToken(String email) {
+        log.info("Generating refresh token");
+        return jwtService.generateRefreshToken(email);
     }
 
 

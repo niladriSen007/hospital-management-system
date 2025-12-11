@@ -39,9 +39,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
         httpSecurity.cors(Customizer.withDefaults()).csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(authRequest ->
-                            authRequest.requestMatchers("/login","/register").permitAll()
+                            authRequest.requestMatchers("/login","/register","/refresh-token").permitAll()
                                     .requestMatchers("/admin/**").hasRole("ADMIN")
-                                    .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
+                                    .requestMatchers("/user/**").hasAnyRole("PATIENT","DOCTOR","ADMIN")
                                     .anyRequest().authenticated()
                         ).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
