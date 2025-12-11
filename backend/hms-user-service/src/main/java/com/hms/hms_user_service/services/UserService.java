@@ -55,8 +55,9 @@ public class UserService {
         String token = "";
         if (authentication.isAuthenticated()) {
             log.info("Logging in user");
-            UserDetails userDetails = appUserDetailsService.loadUserByUsername(loginRequest.getEmail());
-            token = getToken(loginRequest.getEmail());
+            System.out.println((Object)authentication.getPrincipal());
+            UserDetails userDetails = appUserDetailsService.loadUserByUsername(authentication.getName());
+            token = getToken(userDetails.getUsername());
         } else {
             log.info("User not authenticated while Login");
             throw new UsernameNotFoundException("Invalid user request!");
