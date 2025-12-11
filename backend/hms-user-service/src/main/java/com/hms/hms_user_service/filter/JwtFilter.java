@@ -71,6 +71,8 @@ public class JwtFilter extends OncePerRequestFilter {
                         userDetails,
                         null,
                         userDetails.getAuthorities());
+
+                // this will have all the details of the user like - IP address, session id, etc.
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 log.info("User " + userEmail + " authenticated, setting security context");
                 log.info("Authtoken: " + authToken.getName());

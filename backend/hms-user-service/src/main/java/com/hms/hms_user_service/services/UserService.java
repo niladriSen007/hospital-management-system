@@ -4,6 +4,7 @@ import com.hms.hms_user_service.dto.LoginRequest;
 import com.hms.hms_user_service.dto.LoginResponse;
 import com.hms.hms_user_service.dto.RegisterRequest;
 import com.hms.hms_user_service.dto.RegisterResponse;
+import com.hms.hms_user_service.errors.UserAlreadyExistsException;
 import com.hms.hms_user_service.mapper.Mapper;
 import com.hms.hms_user_service.model.User;
 import com.hms.hms_user_service.repositories.UserRepository;
@@ -36,7 +37,7 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(registerRequest.getEmail());
         if (user.isPresent()) {
             log.error("User with email {} already exists", registerRequest.getEmail());
-            throw new RuntimeException("User with email " + registerRequest.getEmail() + " already exists");
+            throw new UserAlreadyExistsException("User with email " + registerRequest.getEmail() + " already exists");
         }
         User newUser = User.builder()
                 .name(registerRequest.getName())
@@ -60,7 +61,7 @@ public class UserService {
             token = getToken(userDetails.getUsername());
         } else {
             log.info("User not authenticated while Login");
-            throw new UsernameNotFoundException("Invalid user request!");
+            throw new UsernameNotFoundException("User not authenticated");
         }
         return LoginResponse.builder().email(loginRequest.getEmail()).token(token).build();
     }
