@@ -43,10 +43,12 @@ public class SecurityConfig {
                                     .requestMatchers("/admin/**").hasRole("ADMIN")
                                     .requestMatchers("/user/**").hasAnyRole("PATIENT","DOCTOR","ADMIN")
                                     .anyRequest().authenticated()
-                        ).sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        ).sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptionHandler -> exceptionHandler.authenticationEntryPoint(customAuthenticationException));
+                .exceptionHandling(exceptionHandler ->
+                        exceptionHandler.authenticationEntryPoint(customAuthenticationException));
         return httpSecurity.build();
     }
 

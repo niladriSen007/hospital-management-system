@@ -32,6 +32,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final AppUserDetailsService appUserDetailsService;
     private final JwtService jwtService;
+    private final SessionService sessionService;
 
     public RegisterResponse createUser(RegisterRequest registerRequest) {
         Optional<User> user = userRepository.findByEmail(registerRequest.getEmail());
@@ -61,6 +62,7 @@ public class UserService {
             UserDetails userDetails = appUserDetailsService.loadUserByUsername(authentication.getName());
             accessToken = getAccessToken(userDetails.getUsername());
             refreshToken = getRefreshToken(userDetails.getUsername());
+            sessionService.generateNewSession(userDetails.getUsername(), refreshToken);
         } else {
             log.info("User not authenticated while Login");
             throw new UsernameNotFoundException("User not authenticated");
@@ -76,6 +78,7 @@ public class UserService {
     public LoginResponse refreshToken(String refreshToken) {
         log.info("Refreshing token");
         String userEmail = jwtService.getUserEmailFromToken(refreshToken);
+        sessionService.validateSession(refreshToken);
         UserDetails userDetails = appUserDetailsService.loadUserByUsername(userEmail);
         if (jwtService.validateToken(refreshToken, userDetails)) {
             String newAccessToken = getAccessToken(userEmail);

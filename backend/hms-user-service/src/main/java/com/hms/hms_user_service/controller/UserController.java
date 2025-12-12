@@ -5,6 +5,7 @@ import com.hms.hms_user_service.dto.LoginRequest;
 import com.hms.hms_user_service.dto.LoginResponse;
 import com.hms.hms_user_service.dto.RegisterRequest;
 import com.hms.hms_user_service.dto.RegisterResponse;
+import com.hms.hms_user_service.services.SessionService;
 import com.hms.hms_user_service.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
