@@ -12,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -50,6 +52,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError<?>> handleMethodInvocationException(MethodInvocationException ex) {
         ApiError<Object> apiError = new ApiError<>("METHOD_INVOCATION_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, null);
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError<?>> handleAccessDeniedException(AccessDeniedException ex) {
+        ApiError<Object> apiError = new ApiError<>("FORBIDDEN", HttpStatus.FORBIDDEN, null);
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
 

@@ -1,15 +1,17 @@
 package com.hms.hms_user_service.services;
 
+import com.hms.hms_user_service.model.Role;
 import com.hms.hms_user_service.model.User;
+import com.hms.hms_user_service.utils.PermissionMapping;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserInfoService implements UserDetails {
@@ -27,8 +29,17 @@ public class UserInfoService implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getAuthority()))
-                .collect(Collectors.toSet());
+        Set<SimpleGrantedAuthority> authoritiesList = new HashSet<>();
+
+        authorities.forEach(role -> {
+            Role userRole = Role.valueOf(role.getAuthority());
+            Set<SimpleGrantedAuthority> perms = PermissionMapping.getPermissionsByRole(userRole);
+            authoritiesList.addAll(perms);
+            authoritiesList.add(new SimpleGrantedAuthority("ROLE_" + role.getAuthority()));
+        });
+        return authoritiesList;
+
+
     }
 
     @Override

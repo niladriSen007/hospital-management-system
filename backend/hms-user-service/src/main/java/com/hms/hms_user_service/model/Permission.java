@@ -1,0 +1,16 @@
+package com.hms.hms_user_service.model;
+
+public enum Permission {
+    PATIENT_VIEW,
+    PATIENT_CREATE,
+    PATIENT_UPDATE,
+    PATIENT_DELETE,
+    DOCTOR_VIEW,
+    DOCTOR_CREATE,
+    DOCTOR_UPDATE,
+    DOCTOR_DELETE,
+    APPOINTMENT_VIEW,
+    APPOINTMENT_CREATE,
+    APPOINTMENT_UPDATE,
+    APPOINTMENT_DELETE
+}

@@ -15,17 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.Role;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth/core")
 @Slf4j
 public class UserController {
 
@@ -71,6 +73,15 @@ public class UserController {
         return ResponseEntity.ok()
 //                .header(HttpHeaders.SET_COOKIE, newRefreshToken.toString())
                 .body(loginResponse);
+    }
+
+//    @Secured({"ROLE_PATIENT", "ROLE_ADMIN"})
+//    @PreAuthorize("hasAnyRole('PATIENT', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('PATIENT', 'ADMIN') AND hasAuthority('PATIENT_VIEW')")
+    @GetMapping("/user/me")
+    public ResponseEntity<String> getCurrentUser(HttpServletRequest request) {
+        log.info("Received request to get current user");
+        return ResponseEntity.ok().body("Current user endpoint");
     }
 
 }

@@ -2,9 +2,8 @@ package com.hms.hms_user_service.config;
 
 
 import com.hms.hms_user_service.filter.JwtFilter;
-import com.hms.hms_user_service.model.Role;
+import com.hms.hms_user_service.model.Permission;
 import com.hms.hms_user_service.services.AppUserDetailsService;
-import com.hms.hms_user_service.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,6 +32,7 @@ import static com.hms.hms_user_service.model.Role.ADMIN;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final CustomAuthenticationException customAuthenticationException;
@@ -40,13 +41,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
-        httpSecurity.cors(Customizer.withDefaults()).csrf(csrf->csrf.disable())
+        httpSecurity.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authRequest ->
-                            authRequest.requestMatchers("/login","/register","/refresh-token").permitAll()
-                                    .requestMatchers("/admin/**").hasRole(ADMIN.name())
-                                    .requestMatchers("/user/**").hasAnyRole("PATIENT","DOCTOR","ADMIN")
-                                    .anyRequest().authenticated()
-                        ).sessionManagement(sessionManagement ->
+                        authRequest.requestMatchers("/auth/core/login", "/auth/core/register", "/auth/core/refresh-token","/user/**").permitAll()
+                                .requestMatchers("/admin/**").hasRole(ADMIN.name())
+//                                .requestMatchers("/user/**")
+////                                .hasAnyRole()
+//                                .hasAnyAuthority(
+//                                        Permission.APPOINTMENT_VIEW.name(),
+//                                        Permission.PATIENT_VIEW.name())
+
+                                .anyRequest().authenticated()
+                ).sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -73,7 +79,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
+    //    @Bean
     public CorsFilter corsFilter() {
         return new CorsFilter(corsConfigurationSource());
     }
