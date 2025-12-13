@@ -1,8 +1,13 @@
 package com.hms.hms_user_service.services;
 
+import com.hms.hms_user_service.errors.UserNotFoundException;
+import com.hms.hms_user_service.model.Role;
+import com.hms.hms_user_service.model.User;
+import com.hms.hms_user_service.repositories.UserRepository;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -13,11 +18,14 @@ import java.util.Date;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
     JwtBuilder builder = Jwts.builder();
     @Value("${jwt.secret:sdsdcscscscdvgsjgsjcfjsfcjrffwefffefsfsfsfdsfsdfsfdsdfsdfshfcd}")
     private String jwtSecret;
+
+    private final UserRepository userRepository;
 
 //    public String generateToken(String email) {
 
@@ -38,10 +46,12 @@ public class JwtService {
     }
 
     private String createToken(JwtBuilder builder, String email, Long timeInMillis) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User with email " + email + " not found"));
         return builder
                 .subject(email)
                 .claim("email", email)
-                .claim("roles", Set.of("PATIENT", "DOCTOR", "ADMIN"))
+                .claim("roles", user.getRoles().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + timeInMillis))
                 .signWith(getSigningKey())

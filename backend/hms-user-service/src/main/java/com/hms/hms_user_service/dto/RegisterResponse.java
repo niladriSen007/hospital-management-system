@@ -1,9 +1,12 @@
 package com.hms.hms_user_service.dto;
 
+import com.hms.hms_user_service.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -13,5 +16,5 @@ public class RegisterResponse {
     private String userId;
     private String name;
     private String email;
-    private String roles;
+    private Set<Role> roles;
 }

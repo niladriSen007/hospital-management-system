@@ -63,13 +63,13 @@ public class UserController {
         String refreshTokenValue = refreshToken.getValue();
         log.info("Refresh token value: {}", refreshTokenValue);
         LoginResponse loginResponse = userService.refreshToken(refreshTokenValue);
-        Cookie newRefreshToken = new Cookie("refreshToken", loginResponse.getRefreshToken());
-        newRefreshToken.setHttpOnly(true);
-        newRefreshToken.setPath("/");
-        newRefreshToken.setMaxAge((int) Duration.ofDays(7).getSeconds());
-        response.addCookie(newRefreshToken);
+//        Cookie newRefreshToken = new Cookie("refreshToken", loginResponse.getRefreshToken());
+//        newRefreshToken.setHttpOnly(true);
+//        newRefreshToken.setPath("/");
+//        newRefreshToken.setMaxAge((int) Duration.ofDays(7).getSeconds());
+//        response.addCookie(newRefreshToken);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, newRefreshToken.toString())
+//                .header(HttpHeaders.SET_COOKIE, newRefreshToken.toString())
                 .body(loginResponse);
     }
 

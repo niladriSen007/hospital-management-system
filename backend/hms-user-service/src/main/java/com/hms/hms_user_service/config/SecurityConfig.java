@@ -2,6 +2,7 @@ package com.hms.hms_user_service.config;
 
 
 import com.hms.hms_user_service.filter.JwtFilter;
+import com.hms.hms_user_service.model.Role;
 import com.hms.hms_user_service.services.AppUserDetailsService;
 import com.hms.hms_user_service.services.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
+import static com.hms.hms_user_service.model.Role.ADMIN;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -40,7 +43,7 @@ public class SecurityConfig {
         httpSecurity.cors(Customizer.withDefaults()).csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(authRequest ->
                             authRequest.requestMatchers("/login","/register","/refresh-token").permitAll()
-                                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                                    .requestMatchers("/admin/**").hasRole(ADMIN.name())
                                     .requestMatchers("/user/**").hasAnyRole("PATIENT","DOCTOR","ADMIN")
                                     .anyRequest().authenticated()
                         ).sessionManagement(sessionManagement ->

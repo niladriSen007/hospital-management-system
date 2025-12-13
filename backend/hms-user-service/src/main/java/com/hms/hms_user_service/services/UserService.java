@@ -82,12 +82,12 @@ public class UserService {
         UserDetails userDetails = appUserDetailsService.loadUserByUsername(userEmail);
         if (jwtService.validateToken(refreshToken, userDetails)) {
             String newAccessToken = getAccessToken(userEmail);
-            String newRefreshToken = getRefreshToken(userEmail);
+//            String newRefreshToken = getRefreshToken(userEmail);
             log.info("Refresh token validated and new tokens generated for user: {}", userEmail);
             return LoginResponse.builder()
                     .email(userEmail)
                     .accessToken(newAccessToken)
-                    .refreshToken(newRefreshToken)
+                    .refreshToken(refreshToken)
                     .build();
         } else {
             log.error("Invalid refresh token for user: {}", userEmail);
