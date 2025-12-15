@@ -25,10 +25,10 @@ export function SignUpPage() {
             Home
           </Link>
         </Button>
-        <div className="mx-auto space-y-4 sm:w-sm">
+        <div className="mx-auto space-y-8 text-center  sm:w-sm">
           <Logo className="h-5 lg:hidden" />
           <div className="flex flex-col space-y-1">
-            <h1 className="font-bold text-2xl tracking-wide">
+            <h1 className="font-bold text-3xl tracking-wide">
               Sign up to Join Now!
             </h1>
             <p className="text-base text-muted-foreground">
@@ -40,20 +40,14 @@ export function SignUpPage() {
 
 
           <p className="mt-8 text-muted-foreground text-sm">
-            By clicking continue, you agree to our{" "}
-            <a
+            Already have an account? {" "}
+            <Link
               className="underline underline-offset-4 hover:text-primary"
-              href="#"
+              href="/sign-in"
             >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a
-              className="underline underline-offset-4 hover:text-primary"
-              href="#"
-            >
-              Privacy Policy
-            </a>
+              Click here
+            </Link>{" "}
+            and login into your account
             .
           </p>
         </div>

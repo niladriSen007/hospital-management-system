@@ -1,25 +1,23 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { Field } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { AtSignIcon, CircleUserRound, KeyRound } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useSignUp } from "@/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AtSignIcon, CircleUserRound, KeyRound, Loader2 } from "lucide-react";
 import { useTransition } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { SignUpSchema, signUpSchema } from "../_schema";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 
 const SignUpForm = () => {
 
-  const navigateTo = useRouter()
-  const [isSignUpPending, startSignUpTransition] = useTransition();
+  const [_, startSignUpTransition] = useTransition();
+  const { isSignUpPending, registerUserMutation } = useSignUp();
 
   const form = useForm({
     resolver: zodResolver(signUpSchema), defaultValues: {
@@ -31,8 +29,8 @@ const SignUpForm = () => {
 
   const onSubmit: SubmitHandler<SignUpSchema> = (data: SignUpSchema) => {
     console.log(data)
-    startSignUpTransition(async () => {
-     
+    startSignUpTransition(() => {
+      registerUserMutation(data)
     })
   }
 
@@ -101,8 +99,12 @@ const SignUpForm = () => {
           </Field>
         )}
       />
-      <Button className="w-full" type="button">
-        Sign up
+      <Button disabled={isSignUpPending} className="w-full" type="submit">
+        {
+          isSignUpPending ? <>
+            <Loader2 /> Creating account...
+          </> : "Create Account"
+        }
       </Button>
     </form>
   )
