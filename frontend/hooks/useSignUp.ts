@@ -7,13 +7,13 @@ import { toast } from "sonner";
 
 export const useSignUp = (): {
   isSignUpPending: boolean;
-  registerUserMutation: (data: { email: string; password: string; name: string }) => void;
+  registerUserMutation: (data: { email: string; password: string; name: string, role: "DOCTOR" | "ADMIN" | "PATIENT" }) => void;
 } => {
   const router = useRouter();
   /*   const queryClient = useQueryClient(); */
   const { mutate: registerUserMutation, isPending: isSignUpPending } = useMutation({
     mutationKey: ["sign-up-user"],
-    mutationFn: async (data: { email: string; password: string; name: string }) => {
+    mutationFn: async (data: { email: string; password: string; name: string, role: "DOCTOR" | "ADMIN" | "PATIENT" }) => {
       console.log("Inside hook")
       await registerUser(data);
     },

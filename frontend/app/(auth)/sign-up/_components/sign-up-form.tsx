@@ -7,6 +7,15 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useSignUp } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AtSignIcon, CircleUserRound, KeyRound, Loader2 } from "lucide-react";
@@ -40,6 +49,38 @@ const SignUpForm = () => {
       {/*  <p className="text-start text-muted-foreground text-sm">
                   Enter your email address
                 </p> */}
+
+
+
+
+
+      <Controller
+        control={form.control}
+        name="role"
+        render={({ field, fieldState }) => (
+          <Field>
+            <Select
+              name="role"
+              value={field.value}
+              onValueChange={field.onChange}>
+              <SelectTrigger className="w-[180px]" aria-invalid={fieldState.invalid}>
+                <SelectValue placeholder="Select your role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="bg-black text-white border border-gray-700">
+                  <SelectLabel>Select your role</SelectLabel>
+                  <SelectItem value="DOCTOR">Doctor</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectItem value="PATIENT">Patient</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {
+              fieldState.error && <p className="text-red-500 text-sm mt-1">{fieldState.error.message}</p>
+            }
+          </Field>
+        )}
+      />
 
 
       <Controller
