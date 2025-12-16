@@ -175,24 +175,18 @@ export function ChartAreaInteractive() {
   const telemedicinePercentage = ((telemedicineVisits / totalVisits) * 100).toFixed(1)
 
   return (
-    <Card className="@container/card relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-gradient-to-br from-zinc-950 via-zinc-950/90 to-zinc-900/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.24)] transition-all duration-500 group">
-      {/* Enhanced decorative gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] via-purple-500/[0.01] to-emerald-500/[0.03]" />
-      <div className="absolute -right-20 -top-20 opacity-[0.02] group-hover:opacity-[0.04] transition-opacity duration-700">
-        <IconActivity className="size-64 text-zinc-400" />
-      </div>
-
-      <CardHeader className="relative space-y-6 pb-6">
+    <Card className="@container/card relative overflow-hidden rounded-xl border border-zinc-800/60 bg-zinc-950/50 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <CardHeader className="relative space-y-5 pb-4">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3.5">
-            <div className="p-2.5 rounded-2xl bg-gradient-to-br from-zinc-900/70 to-zinc-900/50 border border-zinc-800/40 shadow-lg shadow-black/5">
-              <IconActivity className="size-5 text-zinc-400/90" />
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 shadow-sm">
+              <IconActivity className="size-5 text-zinc-300" />
             </div>
             <div>
-              <CardTitle className="text-xl font-semibold tracking-tight text-zinc-50">
+              <CardTitle className="text-lg font-semibold text-zinc-50">
                 Patient Visits Analytics
               </CardTitle>
-              <CardDescription className="text-zinc-500 mt-1 text-[13px] leading-relaxed">
+              <CardDescription className="text-zinc-400 mt-0.5 text-xs">
                 <span className="hidden @[540px]/card:block">
                   Monitoring patient engagement and service utilization
                 </span>
@@ -204,29 +198,29 @@ export function ChartAreaInteractive() {
 
         {/* Statistics Section */}
         <div className="grid grid-cols-2 gap-3 @[540px]/card:grid-cols-4">
-          <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gradient-to-br from-zinc-900/60 to-zinc-900/40 border border-zinc-800/40 backdrop-blur-sm hover:from-zinc-900/80 hover:to-zinc-900/60 hover:border-zinc-700/50 hover:shadow-lg hover:shadow-black/5 transition-all duration-300">
-            <span className="text-[11px] text-zinc-500 font-medium uppercase tracking-wider">Total Visits</span>
-            <span className="text-2xl font-semibold tracking-tight text-zinc-50">{totalVisits.toLocaleString()}</span>
+          <div className="flex flex-col gap-1.5 p-4 rounded-lg bg-zinc-900/70 border border-zinc-800/60 hover:bg-zinc-900 hover:border-zinc-700/80 transition-all duration-200 cursor-default group">
+            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wide group-hover:text-zinc-300 transition-colors">Total Visits</span>
+            <span className="text-xl font-semibold text-zinc-100 group-hover:text-white transition-colors">{totalVisits.toLocaleString()}</span>
           </div>
-          <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gradient-to-br from-blue-950/20 to-blue-950/10 border border-blue-900/20 backdrop-blur-sm hover:from-blue-950/30 hover:to-blue-950/15 hover:border-blue-800/30 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300">
-            <span className="text-[11px] text-blue-400/70 font-medium uppercase tracking-wider">In-Person</span>
+          <div className="flex flex-col gap-1.5 p-4 rounded-lg bg-blue-950/20 border border-blue-900/40 hover:bg-blue-950/30 hover:border-blue-800/60 transition-all duration-200 cursor-default group">
+            <span className="text-[10px] text-blue-300/70 font-medium uppercase tracking-wide group-hover:text-blue-300 transition-colors">In-Person</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-semibold tracking-tight text-blue-400">{inPersonVisits.toLocaleString()}</span>
-              <span className="text-xs text-blue-400/50 font-medium">{inPersonPercentage}%</span>
+              <span className="text-xl font-semibold text-blue-300 group-hover:text-blue-200 transition-colors">{inPersonVisits.toLocaleString()}</span>
+              <span className="text-[10px] text-blue-400/60 font-medium group-hover:text-blue-400/80 transition-colors">{inPersonPercentage}%</span>
             </div>
           </div>
-          <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gradient-to-br from-emerald-950/20 to-emerald-950/10 border border-emerald-900/20 backdrop-blur-sm hover:from-emerald-950/30 hover:to-emerald-950/15 hover:border-emerald-800/30 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300">
-            <span className="text-[11px] text-emerald-400/70 font-medium uppercase tracking-wider">Telemedicine</span>
+          <div className="flex flex-col gap-1.5 p-4 rounded-lg bg-emerald-950/20 border border-emerald-900/40 hover:bg-emerald-950/30 hover:border-emerald-800/60 transition-all duration-200 cursor-default group">
+            <span className="text-[10px] text-emerald-300/70 font-medium uppercase tracking-wide group-hover:text-emerald-300 transition-colors">Telemedicine</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-semibold tracking-tight text-emerald-400">{telemedicineVisits.toLocaleString()}</span>
-              <span className="text-xs text-emerald-400/50 font-medium">{telemedicinePercentage}%</span>
+              <span className="text-xl font-semibold text-emerald-300 group-hover:text-emerald-200 transition-colors">{telemedicineVisits.toLocaleString()}</span>
+              <span className="text-[10px] text-emerald-400/60 font-medium group-hover:text-emerald-400/80 transition-colors">{telemedicinePercentage}%</span>
             </div>
           </div>
-          <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gradient-to-br from-zinc-900/60 to-zinc-900/40 border border-zinc-800/40 backdrop-blur-sm hover:from-zinc-900/80 hover:to-zinc-900/60 hover:border-zinc-700/50 hover:shadow-lg hover:shadow-black/5 transition-all duration-300">
-            <span className="text-[11px] text-zinc-500 font-medium uppercase tracking-wider">Daily Avg</span>
+          <div className="flex flex-col gap-1.5 p-4 rounded-lg bg-zinc-900/70 border border-zinc-800/60 hover:bg-zinc-900 hover:border-zinc-700/80 transition-all duration-200 cursor-default group">
+            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wide group-hover:text-zinc-300 transition-colors">Daily Avg</span>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-semibold tracking-tight text-zinc-50">{avgDailyVisits}</span>
-              <Badge variant="outline" className="border-emerald-500/25 bg-emerald-500/10 text-emerald-400 text-[10px] px-1.5 py-0.5 font-medium">
+              <span className="text-xl font-semibold text-zinc-100 group-hover:text-white transition-colors">{avgDailyVisits}</span>
+              <Badge variant="outline" className="border-emerald-700/60 bg-emerald-900/30 text-emerald-400 text-[9px] px-1.5 py-0.5 font-medium group-hover:border-emerald-600/70 group-hover:bg-emerald-900/40 transition-all">
                 <IconTrendingUp className="size-2.5" />
               </Badge>
             </div>
@@ -238,7 +232,7 @@ export function ChartAreaInteractive() {
             value={timeRange}
             onValueChange={setTimeRange}
             variant="outline"
-            className="hidden *:data-[slot=toggle-group-item]:!px-3.5 *:data-[slot=toggle-group-item]:!py-1.5 *:data-[slot=toggle-group-item]:text-sm *:data-[slot=toggle-group-item]:border-zinc-800/80 *:data-[slot=toggle-group-item]:bg-zinc-900/40 *:data-[slot=toggle-group-item]:text-zinc-400 *:data-[slot=toggle-group-item]:hover:bg-zinc-900 *:data-[slot=toggle-group-item]:hover:text-zinc-300 *:data-[slot=toggle-group-item]:hover:border-zinc-700 *:data-[slot=toggle-group-item]:data-[state=on]:bg-zinc-800 *:data-[slot=toggle-group-item]:data-[state=on]:text-zinc-100 *:data-[slot=toggle-group-item]:data-[state=on]:border-zinc-700 *:data-[slot=toggle-group-item]:data-[state=on]:shadow-sm *:data-[slot=toggle-group-item]:transition-all @[767px]/card:flex"
+            className="hidden *:data-[slot=toggle-group-item]:!px-3 *:data-[slot=toggle-group-item]:!py-1.5 *:data-[slot=toggle-group-item]:text-xs *:data-[slot=toggle-group-item]:border-zinc-800 *:data-[slot=toggle-group-item]:bg-zinc-900 *:data-[slot=toggle-group-item]:text-zinc-400 *:data-[slot=toggle-group-item]:hover:bg-zinc-800 *:data-[slot=toggle-group-item]:hover:text-zinc-300 *:data-[slot=toggle-group-item]:data-[state=on]:bg-zinc-800 *:data-[slot=toggle-group-item]:data-[state=on]:text-zinc-200 *:data-[slot=toggle-group-item]:data-[state=on]:border-zinc-700 @[767px]/card:flex"
           >
             <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
             <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
@@ -246,93 +240,71 @@ export function ChartAreaInteractive() {
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger
-              className="flex w-40 border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-900 hover:border-zinc-700 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden transition-all"
+              className="flex w-40 border-zinc-800 bg-zinc-900 hover:bg-zinc-800 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
               size="sm"
               aria-label="Select a value"
             >
               <SelectValue placeholder="Last 3 months" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-zinc-700 bg-zinc-900">
-              <SelectItem value="90d" className="rounded-lg hover:bg-zinc-800 focus:bg-zinc-800">
+            <SelectContent className="rounded-lg border-zinc-700 bg-zinc-900">
+              <SelectItem value="90d" className="rounded hover:bg-zinc-800 focus:bg-zinc-800">
                 Last 3 months
               </SelectItem>
-              <SelectItem value="30d" className="rounded-lg hover:bg-zinc-800 focus:bg-zinc-800">
+              <SelectItem value="30d" className="rounded hover:bg-zinc-800 focus:bg-zinc-800">
                 Last 30 days
               </SelectItem>
-              <SelectItem value="7d" className="rounded-lg hover:bg-zinc-800 focus:bg-zinc-800">
+              <SelectItem value="7d" className="rounded hover:bg-zinc-800 focus:bg-zinc-800">
                 Last 7 days
               </SelectItem>
             </SelectContent>
           </Select>
         </CardAction>
       </CardHeader>
-      <CardContent className="px-4 pt-8 sm:px-6 pb-6 relative">
+      <CardContent className="px-4 pt-6 sm:px-6 pb-5 relative">
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[320px] w-full"
         >
           <AreaChart data={filteredData}>
             <defs>
-              {/* Bold gradient for In-Person visits */}
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
                 <stop
-                  offset="0%"
-                  stopColor="hsl(221, 83%, 53%)"
-                  stopOpacity={0.8}
+                  offset="5%"
+                  stopColor="hsl(221, 75%, 55%)"
+                  stopOpacity={0.4}
                 />
                 <stop
-                  offset="30%"
-                  stopColor="hsl(221, 83%, 53%)"
-                  stopOpacity={0.5}
-                />
-                <stop
-                  offset="70%"
-                  stopColor="hsl(221, 83%, 53%)"
-                  stopOpacity={0.2}
-                />
-                <stop
-                  offset="100%"
-                  stopColor="hsl(221, 83%, 53%)"
-                  stopOpacity={0.05}
+                  offset="95%"
+                  stopColor="hsl(221, 75%, 55%)"
+                  stopOpacity={0.02}
                 />
               </linearGradient>
-              {/* Bold gradient for Telemedicine */}
               <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
                 <stop
-                  offset="0%"
-                  stopColor="hsl(160, 84%, 39%)"
-                  stopOpacity={0.8}
+                  offset="5%"
+                  stopColor="hsl(160, 65%, 48%)"
+                  stopOpacity={0.4}
                 />
                 <stop
-                  offset="30%"
-                  stopColor="hsl(160, 84%, 39%)"
-                  stopOpacity={0.5}
-                />
-                <stop
-                  offset="70%"
-                  stopColor="hsl(160, 84%, 39%)"
-                  stopOpacity={0.2}
-                />
-                <stop
-                  offset="100%"
-                  stopColor="hsl(160, 84%, 39%)"
-                  stopOpacity={0.05}
+                  offset="95%"
+                  stopColor="hsl(160, 65%, 48%)"
+                  stopOpacity={0.02}
                 />
               </linearGradient>
             </defs>
             <CartesianGrid
               vertical={false}
-              stroke="hsl(240, 3.7%, 15.9%)"
+              stroke="hsl(240, 4%, 18%)"
               strokeDasharray="3 3"
-              opacity={0.2}
+              opacity={0.4}
             />
             <XAxis
               dataKey="date"
               tickLine={false}
               axisLine={false}
-              tickMargin={12}
+              tickMargin={10}
               minTickGap={32}
-              tick={{ fill: 'hsl(240, 5%, 45%)', fontSize: 11, fontWeight: 500 }}
+              tick={{ fill: 'hsl(240, 5%, 55%)', fontSize: 11 }}
               tickFormatter={(value) => {
                 const date = new Date(value)
                 return date.toLocaleDateString("en-US", {
@@ -345,14 +317,14 @@ export function ChartAreaInteractive() {
               tickLine={false}
               axisLine={false}
               tickMargin={10}
-              width={38}
-              tick={{ fill: 'hsl(240, 5%, 45%)', fontSize: 11, fontWeight: 500 }}
+              width={35}
+              tick={{ fill: 'hsl(240, 5%, 55%)', fontSize: 11 }}
             />
             <ChartTooltip
-              cursor={{ stroke: 'hsl(240, 3.7%, 30%)', strokeWidth: 1.5, strokeDasharray: '4 4' }}
+              cursor={{ stroke: 'hsl(240, 5%, 35%)', strokeWidth: 1.5, strokeDasharray: '4 2' }}
               content={
                 <ChartTooltipContent
-                  className="border-zinc-800/50 bg-zinc-950/95 backdrop-blur-xl shadow-2xl rounded-xl px-4 py-3"
+                  className="border-zinc-800/80 bg-zinc-950/95 backdrop-blur-sm shadow-xl rounded-lg px-3.5 py-2.5"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "long",
@@ -360,42 +332,37 @@ export function ChartAreaInteractive() {
                       year: "numeric",
                     })
                   }}
-                  indicator="line"
+                  indicator="dot"
                 />
               }
-            />
-            <Area
-              dataKey="desktop"
-              type="monotone"
-              fill="url(#fillDesktop)"
-              stroke="hsl(221, 83%, 53%)"
-              strokeWidth={3}
-              stackId="a"
-              animationDuration={1000}
-              animationEasing="ease-in-out"
             />
             <Area
               dataKey="mobile"
               type="monotone"
               fill="url(#fillMobile)"
-              stroke="hsl(160, 84%, 39%)"
-              strokeWidth={3}
+              stroke="hsl(160, 65%, 48%)"
+              strokeWidth={2.5}
               stackId="a"
-              animationDuration={1000}
-              animationEasing="ease-in-out"
+            />
+            <Area
+              dataKey="desktop"
+              type="monotone"
+              fill="url(#fillDesktop)"
+              stroke="hsl(221, 75%, 55%)"
+              strokeWidth={2.5}
+              stackId="a"
             />
           </AreaChart>
         </ChartContainer>
 
-        {/* Professional Legend */}
-        <div className="flex items-center justify-center gap-8 mt-6 pt-6 border-t border-zinc-800/40">
+        <div className="flex items-center justify-center gap-6 mt-5 pt-4 border-t border-zinc-800/50">
           <div className="flex items-center gap-2.5 group/legend cursor-default">
-            <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm group-hover/legend:shadow-blue-500/50 transition-shadow" />
-            <span className="text-xs text-zinc-500 font-medium tracking-wide group-hover/legend:text-zinc-400 transition-colors">In-Person</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-[hsl(221,75%,55%)] ring-2 ring-blue-500/0 group-hover/legend:ring-blue-500/30 transition-all" />
+            <span className="text-xs text-zinc-400 font-medium group-hover/legend:text-zinc-300 transition-colors">In-Person</span>
           </div>
           <div className="flex items-center gap-2.5 group/legend cursor-default">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm group-hover/legend:shadow-emerald-500/50 transition-shadow" />
-            <span className="text-xs text-zinc-500 font-medium tracking-wide group-hover/legend:text-zinc-400 transition-colors">Telemedicine</span>
+            <div className="w-2.5 h-2.5 rounded-full bg-[hsl(160,65%,48%)] ring-2 ring-emerald-500/0 group-hover/legend:ring-emerald-500/30 transition-all" />
+            <span className="text-xs text-zinc-400 font-medium group-hover/legend:text-zinc-300 transition-colors">Telemedicine</span>
           </div>
         </div>
       </CardContent>

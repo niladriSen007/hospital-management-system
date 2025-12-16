@@ -1,6 +1,7 @@
 "use client"
 
 import { signInUser } from "@/client/path";
+import { useUserStore } from "@/store/user-store";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -10,15 +11,20 @@ export const useSignIn = (): {
   signInUserMutation: (data: { email: string; password: string; }) => void;
 } => {
   const router = useRouter();
+  const { updateUser } = useUserStore();
   const { mutate: signInUserMutation, isPending: isSignInPending } = useMutation({
     mutationKey: ["sign-in-user"],
     mutationFn: async (data: { email: string; password: string; }) => {
       console.log("Inside hook")
-      await signInUser(data);
+      return await signInUser(data);
     },
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
       toast.success("Logged in successfully.");
-      console.log("User logged in successfully");
+      updateUser({
+        id: data?.userId,
+        name: data?.name,
+        email: data?.email
+      });
       router.push("/")
     },
     onError: (error: {
