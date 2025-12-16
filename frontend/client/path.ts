@@ -2,7 +2,7 @@ import { client } from "./axios";
 
 export const AUTH_SERVICE = 'auth/core';
 
-export const registerUser = (userData: { email: string; password: string; name: string,role: "DOCTOR" | "ADMIN" | "PATIENT" }) => {
+export const registerUser = (userData: { email: string; password: string; name: string, role: "DOCTOR" | "ADMIN" | "PATIENT" }) => {
   console.log("Inside axios path")
   return client.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${AUTH_SERVICE}/register`, {
     ...userData,
@@ -15,4 +15,8 @@ export const signInUser = (userData: { email: string; password: string }) => {
   return client.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${AUTH_SERVICE}/login`, {
     ...userData
   });
+}
+
+export const getUserProfile = () => {
+  return client.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${AUTH_SERVICE}/user/profile`);
 }

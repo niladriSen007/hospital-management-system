@@ -25,7 +25,7 @@ export const useSignIn = (): {
         name: data?.name,
         email: data?.email
       });
-      router.push("/")
+      router.push("/dashboard")
     },
     onError: (error: {
       message?: string;

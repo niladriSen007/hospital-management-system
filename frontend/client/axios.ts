@@ -50,7 +50,12 @@ client.interceptors.response.use(
 
     const status = err.response ? err.response.status : null;
 
-    if (status === 401 && !originalRequest._isRetry) {
+    // Don't attempt token refresh for auth endpoints (login, register, refresh-token)
+    const isAuthEndpoint = originalRequest.url?.includes('/login') ||
+      originalRequest.url?.includes('/register') ||
+      originalRequest.url?.includes('/refresh-token');
+
+    if (status === 401 && !originalRequest._isRetry && !isAuthEndpoint) {
       try {
         originalRequest._isRetry = true;
         const headers = { ...originalRequest.headers };
