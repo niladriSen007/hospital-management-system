@@ -3,6 +3,7 @@ package com.hms.hms_user_service.controller;
 
 import com.hms.hms_user_service.dto.*;
 import com.hms.hms_user_service.services.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 @RestController
@@ -36,37 +38,71 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
         log.info("Received login request for email: {}", loginRequest.getEmail());
-        LoginResponse loginResponse = userService.loginUser(loginRequest);
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
-                .httpOnly(true)
-                .path("/")
-                .sameSite("Strict")
-                .build();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(loginResponse);
+        try {
+            LoginResponse loginResponse = userService.loginUser(loginRequest);
+            ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+                    .httpOnly(true)
+                    .path("/")
+                    .maxAge(Duration.ofDays(180)) // 180 days
+                    .sameSite("Strict")
+                    .build();
+
+            ResponseCookie accessCookie = ResponseCookie.from("accessToken", loginResponse.getAccessToken())
+                    .httpOnly(true)
+                    .path("/")
+                    .maxAge(Duration.ofMinutes(15))
+                    .sameSite("Strict")
+                    .build();
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                    .body(loginResponse);
+        } catch (ExpiredJwtException eje) {
+            log.warn("Expired JWT detected while processing login request for {}: {}", loginRequest.getEmail(), eje.getMessage());
+            // Return clear 401 so client can clear stored tokens and retry authentication
+            return ResponseEntity.status(401).body(
+                    LoginResponse.builder()
+                            .email(loginRequest.getEmail())
+                            .accessToken("") // explicit empty tokens
+                            .refreshToken("")
+                            .name("")
+                            .userId("")
+                            .build()
+            );
+        }
     }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         log.info("Attempting to refresh token");
-        Cookie[] cookies = request.getCookies();
-        Cookie refreshToken =
-                Arrays.stream(cookies)
-                        .filter(cookie -> cookie.getName().equals("refreshToken"))
-                        .findFirst()
-                        .orElseThrow(() -> new AuthenticationServiceException("Refresh token not found"));
-        log.info("Received request to refresh token");
-        String refreshTokenValue = refreshToken.getValue();
-        log.info("Refresh token value: {}", refreshTokenValue);
-        LoginResponse loginResponse = userService.refreshToken(refreshTokenValue);
-//        Cookie newRefreshToken = new Cookie("refreshToken", loginResponse.getRefreshToken());
-//        newRefreshToken.setHttpOnly(true);
-//        newRefreshToken.setPath("/");
-//        newRefreshToken.setMaxAge((int) Duration.ofDays(7).getSeconds());
-//        response.addCookie(newRefreshToken);
-        return ResponseEntity.ok()
-//                .header(HttpHeaders.SET_COOKIE, newRefreshToken.toString())
-                .body(loginResponse);
+        try {
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null || cookies.length == 0) {
+                log.warn("No cookies present on refresh-token request");
+                throw new AuthenticationServiceException("Refresh token not found");
+            }
+            Cookie refreshToken =
+                    Arrays.stream(cookies)
+                            .filter(cookie -> cookie.getName().equals("refreshToken"))
+                            .findFirst()
+                            .orElseThrow(() -> new AuthenticationServiceException("Refresh token not found"));
+            log.info("Received request to refresh token");
+            String refreshTokenValue = refreshToken.getValue();
+            log.info("Refresh token value: {}", refreshTokenValue);
+            LoginResponse loginResponse = userService.refreshToken(refreshTokenValue);
+            return ResponseEntity.ok().body(loginResponse);
+        } catch (ExpiredJwtException eje) {
+            log.warn("Expired JWT detected on refresh-token: {}", eje.getMessage());
+            return ResponseEntity.status(401).body(
+                    LoginResponse.builder()
+                            .email("")
+                            .accessToken("")
+                            .refreshToken("")
+                            .name("")
+                            .userId("")
+                            .build()
+            );
+        }
     }
 
     //    @Secured({"ROLE_PATIENT", "ROLE_ADMIN"})

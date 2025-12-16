@@ -28,7 +28,7 @@ import java.util.Set;
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final Set<String> WHITELIST = Set.of(
-            "/login", "/register"
+            "/auth/core/login", "/auth/core/register", "/auth/core/refresh-token"
     );
     private final AppUserDetailsService appUserDetailsService;
     private final JwtService jwtService;
