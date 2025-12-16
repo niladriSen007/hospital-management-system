@@ -107,7 +107,12 @@ public class UserService {
             log.error("User with email {} not found", email);
             return new UsernameNotFoundException("User with email " + email + " not found");
         });
-        return ProfileResponse.builder().email(user.getEmail()).name(user.getName()).userId(user.getUserId()).build();
+        return ProfileResponse.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .userId(user.getUserId())
+                .roles(user.getRoles())
+                .build();
     }
 
     public String getAccessToken(String email) {
