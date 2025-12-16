@@ -1,16 +1,12 @@
 package com.hms.hms_user_service.services;
 
-import com.hms.hms_user_service.dto.LoginRequest;
-import com.hms.hms_user_service.dto.LoginResponse;
-import com.hms.hms_user_service.dto.RegisterRequest;
-import com.hms.hms_user_service.dto.RegisterResponse;
+import com.hms.hms_user_service.dto.*;
 import com.hms.hms_user_service.errors.UserAlreadyExistsException;
 import com.hms.hms_user_service.mapper.Mapper;
 import com.hms.hms_user_service.model.User;
 import com.hms.hms_user_service.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.Optional;
 
 @Service
@@ -56,6 +51,8 @@ public class UserService {
         Authentication authentication = authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
         String accessToken = "";
         String refreshToken = "";
+        String name = "";
+        String id = "";
         if (authentication.isAuthenticated()) {
             log.info("Logging in user");
             System.out.println((Object) authentication.getPrincipal());
@@ -63,6 +60,13 @@ public class UserService {
             accessToken = getAccessToken(userDetails.getUsername());
             refreshToken = getRefreshToken(userDetails.getUsername());
             sessionService.generateNewSession(userDetails.getUsername(), refreshToken);
+            User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> {
+                log.error("User with email {} not found after authentication", userDetails.getUsername());
+                return new UsernameNotFoundException("User with email " + userDetails.getUsername() + " not found");
+            });
+            name = user.getName();
+            id = user.getUserId();
+            log.info("User {} logged in successfully", loginRequest.getEmail());
         } else {
             log.info("User not authenticated while Login");
             throw new UsernameNotFoundException("User not authenticated");
@@ -70,6 +74,8 @@ public class UserService {
         return LoginResponse
                 .builder()
                 .email(loginRequest.getEmail())
+                .name(name)
+                .userId(id)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -93,6 +99,15 @@ public class UserService {
             log.error("Invalid refresh token for user: {}", userEmail);
             throw new UsernameNotFoundException("Invalid refresh token");
         }
+    }
+
+    public ProfileResponse getUserProfile(String email) {
+        log.info("Fetching user profile for email: {}", email);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            log.error("User with email {} not found", email);
+            return new UsernameNotFoundException("User with email " + email + " not found");
+        });
+        return ProfileResponse.builder().email(user.getEmail()).name(user.getName()).userId(user.getUserId()).build();
     }
 
     public String getAccessToken(String email) {

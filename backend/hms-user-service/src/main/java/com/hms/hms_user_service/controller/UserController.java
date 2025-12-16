@@ -1,11 +1,7 @@
 package com.hms.hms_user_service.controller;
 
 
-import com.hms.hms_user_service.dto.LoginRequest;
-import com.hms.hms_user_service.dto.LoginResponse;
-import com.hms.hms_user_service.dto.RegisterRequest;
-import com.hms.hms_user_service.dto.RegisterResponse;
-import com.hms.hms_user_service.services.SessionService;
+import com.hms.hms_user_service.dto.*;
 import com.hms.hms_user_service.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,15 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.Role;
-import java.time.Duration;
 import java.util.Arrays;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -75,13 +69,21 @@ public class UserController {
                 .body(loginResponse);
     }
 
-//    @Secured({"ROLE_PATIENT", "ROLE_ADMIN"})
+    //    @Secured({"ROLE_PATIENT", "ROLE_ADMIN"})
 //    @PreAuthorize("hasAnyRole('PATIENT', 'ADMIN')")
     @PreAuthorize("hasAnyRole('PATIENT', 'ADMIN') AND hasAuthority('PATIENT_VIEW')")
     @GetMapping("/user/me")
     public ResponseEntity<String> getCurrentUser(HttpServletRequest request) {
         log.info("Received request to get current user");
         return ResponseEntity.ok().body("Current user endpoint");
+    }
+
+//    @PreAuthorize("hasRole('PATIENT','DOCTOR')")
+    @GetMapping("/user/profile")
+    public ResponseEntity<ProfileResponse> getUserProfile(@CurrentSecurityContext SecurityContext securityContext) {
+        log.info("Received request to get user profile");
+        ProfileResponse userProfile = userService.getUserProfile(securityContext.getAuthentication().getName());
+        return ResponseEntity.ok().body(userProfile);
     }
 
 }

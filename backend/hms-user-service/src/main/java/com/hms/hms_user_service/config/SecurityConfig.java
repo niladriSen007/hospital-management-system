@@ -28,6 +28,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.List;
 
 import static com.hms.hms_user_service.model.Role.ADMIN;
+import static com.hms.hms_user_service.model.Role.PATIENT;
 
 @Configuration
 @EnableWebSecurity
@@ -43,8 +44,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
         httpSecurity.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authRequest ->
-                        authRequest.requestMatchers("/auth/core/login", "/auth/core/register", "/auth/core/refresh-token","/user/**").permitAll()
+                        authRequest.requestMatchers("/auth/core/login", "/auth/core/register", "/auth/core/refresh-token").permitAll()
                                 .requestMatchers("/admin/**").hasRole(ADMIN.name())
+                                .requestMatchers("/user/**").hasRole(PATIENT.name())
 //                                .requestMatchers("/user/**")
 ////                                .hasAnyRole()
 //                                .hasAnyAuthority(
