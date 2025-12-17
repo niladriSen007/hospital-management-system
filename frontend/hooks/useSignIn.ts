@@ -23,7 +23,8 @@ export const useSignIn = (): {
       updateUser({
         id: data?.userId,
         name: data?.name,
-        email: data?.email
+        email: data?.email,
+        roles: data?.roles
       });
       router.push("/dashboard")
     },

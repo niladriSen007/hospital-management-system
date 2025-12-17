@@ -7,13 +7,14 @@ interface UserState {
     id: string;
     name: string;
     email: string;
+    roles: string[]
   } | null;
   isLoggedIn: boolean;
 }
 
 // Action types
 interface Actions {
-  updateUser: (user: { id: string; name: string; email: string }) => void;
+  updateUser: (user: { id: string; name: string; email: string, roles: string[] }) => void;
   deleteUser: () => void;
 }
 
@@ -24,6 +25,6 @@ export const useUserStore = create<UserState & Actions>()(devtools((set, get) =>
   isLoggedIn: false,
 
   // Actions
-  updateUser: (user: { id: string; name: string; email: string }) => set(() => ({ currentUser: user, isLoggedIn: true })),
+  updateUser: (user: { id: string; name: string; email: string, roles: string[] }) => set(() => ({ currentUser: user, isLoggedIn: true })),
   deleteUser: () => set(() => ({ currentUser: null, isLoggedIn: false })),
 })));

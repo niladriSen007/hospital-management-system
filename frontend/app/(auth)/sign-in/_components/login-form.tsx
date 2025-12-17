@@ -20,21 +20,22 @@ const LoginForm = () => {
 
 
   const [_, startSignInTransition] = useTransition();
-    const { isSignInPending, signInUserMutation } = useSignIn();
-  
-    const form = useForm({
-      resolver: zodResolver(signInSchema), defaultValues: {
-        email: "",
-        password: ""
-      }
-    })
-  
-    const onSubmit: SubmitHandler<SignInSchema> = (data: SignInSchema) => {
-      console.log(data)
-      startSignInTransition(() => {
-        signInUserMutation(data)
-      })
+  const { isSignInPending, signInUserMutation } = useSignIn();
+
+  const form = useForm({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: ""
     }
+  })
+
+  const onSubmit: SubmitHandler<SignInSchema> = (data: SignInSchema) => {
+    console.log(data)
+    startSignInTransition(() => {
+      signInUserMutation(data)
+    })
+  }
 
   return (
     <div>

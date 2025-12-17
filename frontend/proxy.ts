@@ -16,9 +16,17 @@ export function proxy(request: NextRequest) {
     route => pathname.startsWith(route)
   );
 
+  if (pathname === "/") {
+    if (accessToken) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    } else {
+      return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+  }
+
   if (isProtectedRoute && !accessToken) {
     const loginUrl = new URL('/sign-in', request.url);
-    console.log(pathname,"pathname")
+    console.log(pathname, "pathname")
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
