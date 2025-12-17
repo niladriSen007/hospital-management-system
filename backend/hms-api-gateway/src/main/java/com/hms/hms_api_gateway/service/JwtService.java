@@ -24,7 +24,7 @@ public class JwtService {
     }
 
 
-    public String getUserEmailFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()

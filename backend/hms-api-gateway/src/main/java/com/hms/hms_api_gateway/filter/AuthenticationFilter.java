@@ -37,11 +37,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             final String token = tokenHeader.substring(7);
 
             try {
-                String userEmail = jwtService.getUserEmailFromToken(token);
-                log.info("userEmail - {}", userEmail);
+                String userId = jwtService.getUserIdFromToken(token);
+                log.info("userId - {}", userId);
                 return chain.filter(
                         exchange.mutate().request(
-                                req -> req.header("X-User-Email", userEmail)
+                                req -> req.header("X-User-Id", userId)
                         ).build());
             } catch (JwtException ex) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);

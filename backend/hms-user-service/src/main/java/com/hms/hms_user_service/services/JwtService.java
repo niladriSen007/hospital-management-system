@@ -1,7 +1,6 @@
 package com.hms.hms_user_service.services;
 
 import com.hms.hms_user_service.errors.UserNotFoundException;
-import com.hms.hms_user_service.model.Role;
 import com.hms.hms_user_service.model.User;
 import com.hms.hms_user_service.repositories.UserRepository;
 import io.jsonwebtoken.JwtBuilder;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -34,31 +32,31 @@ public class JwtService {
     /// /        return createToken(builder,email);
 //        return createToken(builder, email);
 //    }
-    public String generateAccessToken(String email) {
-        return createToken(builder, email, 1000L * 60 * 15); // 15 minutes
+    public String generateAccessToken(User user) {
+        return createToken(builder, user, 1000L * 60 * 15); // 15 minutes
     }
 
-    public String generateRefreshToken(String email) {
-        return Jwts.builder().subject(email).issuedAt(new Date()).expiration(
+    public String generateRefreshToken(User user) {
+        return Jwts.builder().subject(user.getUserId()).issuedAt(new Date()).expiration(
                         new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30 * 6) // 6 months
                 ).signWith(getSigningKey())
                 .compact();
     }
 
-    private String createToken(JwtBuilder builder, String email, Long timeInMillis) {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email " + email + " not found"));
+    private String createToken(JwtBuilder builder, User user, Long timeInMillis) {
+        User existingUser = userRepository.findByEmail(user.getEmail()).orElseThrow(() ->
+                new UserNotFoundException("User with email " + user.getEmail() + " not found"));
         return builder
-                .subject(email)
-                .claim("email", email)
-                .claim("roles", user.getRoles().toString())
+                .subject(existingUser.getUserId())
+                .claim("email", existingUser.getEmail())
+                .claim("roles", existingUser.getRoles().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + timeInMillis))
                 .signWith(getSigningKey())
                 .compact();
     }
 
-    public String getUserEmailFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -68,13 +66,13 @@ public class JwtService {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        String userEmail = getUserEmailFromToken(token);
+        String userId = getUserIdFromToken(token);
         try {
             Jwts.parser()
                     .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token);
-            return userEmail.equals(userDetails.getUsername());
+            return true;
         } catch (Exception e) {
             return false;
         }

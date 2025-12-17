@@ -57,13 +57,13 @@ public class UserService {
             log.info("Logging in user");
             System.out.println((Object) authentication.getPrincipal());
             UserDetails userDetails = appUserDetailsService.loadUserByUsername(authentication.getName());
-            accessToken = getAccessToken(userDetails.getUsername());
-            refreshToken = getRefreshToken(userDetails.getUsername());
-            sessionService.generateNewSession(userDetails.getUsername(), refreshToken);
             User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> {
                 log.error("User with email {} not found after authentication", userDetails.getUsername());
                 return new UsernameNotFoundException("User with email " + userDetails.getUsername() + " not found");
             });
+            accessToken = getAccessToken(user);
+            refreshToken = getRefreshToken(user);
+            sessionService.generateNewSession(userDetails.getUsername(), refreshToken);
             name = user.getName();
             id = user.getUserId();
             log.info("User {} logged in successfully", loginRequest.getEmail());
@@ -83,20 +83,28 @@ public class UserService {
 
     public LoginResponse refreshToken(String refreshToken) {
         log.info("Refreshing token");
-        String userEmail = jwtService.getUserEmailFromToken(refreshToken);
+        String userId = jwtService.getUserIdFromToken(refreshToken);
         sessionService.validateSession(refreshToken);
-        UserDetails userDetails = appUserDetailsService.loadUserByUsername(userEmail);
+        User userInDb = userRepository.findByUserId(userId).orElseThrow(() -> {
+            log.error("User with id {} not found during session validation", userId);
+            return new UsernameNotFoundException("User with id " + userId + " not found");
+        });
+        UserDetails userDetails = appUserDetailsService.loadUserByUsername(userInDb.getEmail());
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> {
+            log.error("User with id {} not found during token refresh", userId);
+            return new UsernameNotFoundException("User with id " + userId + " not found");
+        });
         if (jwtService.validateToken(refreshToken, userDetails)) {
-            String newAccessToken = getAccessToken(userEmail);
+            String newAccessToken = getAccessToken(user);
 //            String newRefreshToken = getRefreshToken(userEmail);
-            log.info("Refresh token validated and new tokens generated for user: {}", userEmail);
+            log.info("Refresh token validated and new tokens generated for user: {}", user.getEmail());
             return LoginResponse.builder()
-                    .email(userEmail)
+                    .email(user.getEmail())
                     .accessToken(newAccessToken)
                     .refreshToken(refreshToken)
                     .build();
         } else {
-            log.error("Invalid refresh token for user: {}", userEmail);
+            log.error("Invalid refresh token for user: {}", user.getEmail());
             throw new UsernameNotFoundException("Invalid refresh token");
         }
     }
@@ -115,18 +123,19 @@ public class UserService {
                 .build();
     }
 
-    public String getAccessToken(String email) {
-        log.info("Generating access token");
-        return jwtService.generateAccessToken(email);
+    public String getAccessToken(User user) {
+        log.info("Generating access token for user: {}", user.getEmail());
+        return jwtService.generateAccessToken(user);
     }
 
-    public String getRefreshToken(String email) {
-        log.info("Generating refresh token");
-        return jwtService.generateRefreshToken(email);
+    public String getRefreshToken(User user) {
+        log.info("Generating refresh token for user: {}", user.getEmail());
+        return jwtService.generateRefreshToken(user);
     }
 
 
     private Authentication authenticateUser(String email, String password) {
+        log.info("Authenticating user: {}", email);
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
     }
 }

@@ -20,7 +20,7 @@ public class Session {
 
     private String refreshToken;
 
-    @CreationTimestamp
+
     private LocalDateTime lastUsedAt;
 
     private String userEmail;

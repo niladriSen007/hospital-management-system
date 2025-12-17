@@ -117,7 +117,8 @@ public class UserController {
 //    @PreAuthorize("hasRole('PATIENT','DOCTOR')")
     @GetMapping("/user/profile")
     public ResponseEntity<ProfileResponse> getUserProfile(@CurrentSecurityContext SecurityContext securityContext) {
-        log.info("Received request to get user profile");
+        System.out.println("id--------"+securityContext.getAuthentication().getName());
+        log.info("Received request to get user profile",securityContext.getAuthentication().getName());
         ProfileResponse userProfile = userService.getUserProfile(securityContext.getAuthentication().getName());
         return ResponseEntity.ok().body(userProfile);
     }

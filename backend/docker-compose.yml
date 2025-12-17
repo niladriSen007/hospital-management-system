@@ -14,8 +14,23 @@ services:
       - user-db-data:/var/lib/mysql
     networks:
       - hms-network
+  profile-db:
+    image: mysql:8.0
+    container_name: hms-profile-db
+    environment:
+      MYSQL_ROOT_PASSWORD: user
+      MYSQL_DATABASE: hms_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - "3308:3306"
+    volumes:
+      - profile-db-data:/var/lib/mysql
+    networks:
+      - hms-network
 volumes:
   user-db-data:
+  profile-db-data:
 networks:
   hms-network:
     driver: bridge

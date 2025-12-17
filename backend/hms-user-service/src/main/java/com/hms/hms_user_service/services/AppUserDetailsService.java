@@ -22,7 +22,18 @@ public class AppUserDetailsService implements UserDetailsService {
             log.error("User with email {} not found", email);
             return new UsernameNotFoundException("User with email " + email + " not found");
         });
-        log.info("User with email {} found from database", email);
+        log.info("User with email {} found from database", user.getEmail());
         return new UserInfoService(user);
     }
+
+    public UserDetails loadUserByUserId(String id) throws UsernameNotFoundException {
+        User user = userRepository.findByUserId(id).orElseThrow(() -> {
+            log.error("User with id {} not found", id);
+            return new UsernameNotFoundException("User with id " + id + " not found");
+        });
+        log.info("User with id {} found from database", user.getEmail());
+        return new UserInfoService(user);
+    }
+
+
 }

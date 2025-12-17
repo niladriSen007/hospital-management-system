@@ -50,14 +50,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String authHeader = request.getHeader("Authorization");
             String token = "";
-            String userEmail = null;
+            String userId = null;
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response);
                 return;
             } else {
                 token = authHeader.substring(7);
-                userEmail = jwtService.getUserEmailFromToken(token);
+                userId = jwtService.getUserIdFromToken(token);
             }
 
             if (token == null) {
@@ -72,8 +72,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
 
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = appUserDetailsService.loadUserByUsername(userEmail);
+            if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = appUserDetailsService.loadUserByUserId(userId);
                 if (jwtService.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -82,7 +82,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     // this will have all the details of the user like - IP address, session id, etc.
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    log.info("User " + userEmail + " authenticated, setting security context");
+                    log.info("User " + userId + " authenticated, setting security context");
                     log.info("Authtoken: " + authToken.getName());
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }

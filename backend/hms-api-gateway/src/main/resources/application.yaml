@@ -12,6 +12,13 @@ spring:
                 - Path=/api/v1/auth/**
               filters:
                 - StripPrefix=2
+            - id: hms-profile-service
+              uri: lb://HMS-PROFILE-SERVICE
+              predicates:
+                - Path=/api/v1/profile/**
+              filters:
+                - StripPrefix=2
+                - name: AuthenticationFilter
   main:
     allow-bean-definition-overriding: true
 server:
