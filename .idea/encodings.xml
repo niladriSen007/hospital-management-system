@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/backend/hms-api-gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/hms-discovery-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/hms-profile-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/hms-user-service/src/main/java" charset="UTF-8" />
   </component>
 </project>
